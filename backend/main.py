@@ -1,7 +1,8 @@
 """
 LinkedIn Job Filter API - FastAPI 애플리케이션
-Phase 1: 프로젝트 세팅 + 구글 시트 연동 확인
-Phase 2: 파일 업로드 기능
+Phase 1: 프로젝트 세팅 + 구글 시트 연동 확인 ✅
+Phase 2: 파일 업로드 기능 ✅
+Phase 3: 필터링 로직 ✅
 """
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,6 +14,8 @@ from config import (
     load_processed_ids, save_processed_ids
 )
 from sheets import get_sheets_client
+from filter import JobFilter
+from parser import JobParser
 
 app = FastAPI(
     title="LinkedIn Job Filter API",
@@ -219,47 +222,129 @@ async def upload_json(file: UploadFile = File(...)):
 @app.post("/filter")
 async def filter_jobs():
     """
-    필터링 실행 (Phase 3에서 구현)
+    [Phase 3] 필터링 실행
     
-    - 가장 최근 업로드 파일 (upload_YYYYMMDD_HHMMSS.json) 자동 검색
-    - 중복 제거, 필터링, 구글 시트 append
-    - 통계 반환
+    - 가장 최신 업로드 파일 (upload_YYYYMMDD_HHMMSS.json) 자동 검색
+    - 필터링 적용 (6가지 조건)
+    - 통계 반환 (아직 Google Sheets에는 저장하지 않음)
     
     Request: body 없음 (가장 최근 파일 자동 처리)
     
     Response 200:
         {
+            "success": true,
             "total": 150,
             "duplicatesRemoved": 12,
-            "filtered": 138,
             "passed": 23,
-            "savedToSheet": 23,
-            "rejected": {
+            "rejected": 115,
+            "breakdown": {
                 "salary": 15,
                 "experience": 35,
                 "clearance": 8,
                 "education": 3,
                 "level": 54
             },
-            "sheetUrl": "https://docs.google.com/spreadsheets/d/SHEET_ID"
+            "sheetUrl": "https://docs.google.com/spreadsheets/d/SHEET_ID",
+            "message": "필터링 완료: 전체 150개 중 23개 통과"
         }
     
     Response 400:
         {"error": "No uploaded file found"}
     
     Response 500:
-        {"error": "Google Sheets API failed"}
+        {"error": "필터링 중 오류 발생"}
     """
     try:
-        return {
-            "success": False,
-            "message": "Phase 3 필터링 기능은 아직 구현되지 않았습니다",
-            "status": "not_implemented"
+        # 1. 가장 최신 업로드 파일 검색
+        print("🔍 최근 업로드 파일 검색 중...")
+        
+        if not RAWDATA_DIR.exists():
+            raise HTTPException(
+                status_code=400,
+                detail={"error": "No uploaded file found"}
+            )
+        
+        # upload_YYYYMMDD_HHMMSS.json 형식의 파일 찾기
+        upload_files = sorted(RAWDATA_DIR.glob("upload_*.json"))
+        
+        if not upload_files:
+            print("❌ 업로드된 파일 없음")
+            raise HTTPException(
+                status_code=400,
+                detail={"error": "No uploaded file found"}
+            )
+        
+        # 최신 파일 (마지막 파일)
+        latest_file = upload_files[-1]
+        print(f"✅ 최신 파일 발견: {latest_file.name}")
+        
+        # 2. 파일 로드
+        print(f"📂 파일 로드 중: {latest_file}")
+        
+        with open(latest_file, 'r', encoding='utf-8') as f:
+            jobs = json.load(f)
+        
+        if not isinstance(jobs, list) or len(jobs) == 0:
+            print("❌ JSON 파일이 비어있거나 배열이 아님")
+            raise HTTPException(
+                status_code=400,
+                detail={"error": "Invalid JSON format"}
+            )
+        
+        print(f"✅ {len(jobs)}개 job 로드됨")
+        
+        # 3. 처리된 ID 로드
+        print("📋 처리된 ID 로드 중...")
+        processed_ids = load_processed_ids()
+        print(f"   기존 처리된 ID 수: {len(processed_ids)}")
+        
+        # 4. 필터링 실행
+        print("🔬 필터링 실행 중...")
+        
+        filter_engine = JobFilter(processed_ids)
+        passed_jobs, stats = filter_engine.filter_jobs(jobs)
+        
+        print(f"✅ 필터링 완료:")
+        print(f"   총 job 수: {stats['total']}")
+        print(f"   중복 제거: {stats['duplicatesRemoved']}")
+        print(f"   통과: {stats['passed']}")
+        print(f"   탈락: {stats['rejected']}")
+        print(f"   - 연봉 초과: {stats['breakdown']['salary']}")
+        print(f"   - 경력 초과: {stats['breakdown']['experience']}")
+        print(f"   - 보안 인가: {stats['breakdown']['clearance']}")
+        print(f"   - 교육 요구: {stats['breakdown']['education']}")
+        print(f"   - 직급 제외: {stats['breakdown']['level']}")
+        
+        # 5. 응답 구성
+        breakdown = stats.pop("breakdown")
+        
+        response = {
+            "success": True,
+            "total": stats["total"],
+            "duplicatesRemoved": stats["duplicatesRemoved"],
+            "filtered": stats["rejected"],  # 필터된 (탈락한) job 개수
+            "passed": stats["passed"],
+            "rejected": {
+                "salary": breakdown["salary"],
+                "experience": breakdown["experience"],
+                "clearance": breakdown["clearance"],
+                "education": breakdown["education"],
+                "level": breakdown["level"]
+            },
+            "sheetUrl": f"https://docs.google.com/spreadsheets/d/{GOOGLE_SHEET_ID}",
+            "message": f"✅ 필터링 완료: 전체 {stats['total']}개 중 {stats['passed']}개 통과"
         }
+        
+        print(f"\n📊 응답 준비 완료")
+        return response
+    
+    except HTTPException:
+        raise
     except Exception as e:
+        print(f"❌ 필터링 중 오류: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail={"error": str(e), "message": "필터링 실패"}
+            detail={"error": str(e), "message": "필터링 중 오류 발생"}
         )
 
 if __name__ == "__main__":
