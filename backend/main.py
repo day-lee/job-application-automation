@@ -4,6 +4,7 @@ Phase 1: 프로젝트 세팅 + 구글 시트 연동 확인 ✅
 Phase 2: 파일 업로드 기능 ✅
 Phase 3: 필터링 로직 ✅
 Phase 4: 필터 + 시트 연결 ✅
+Phase 5: 프론트엔드 구현 ✅
 """
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,7 +28,7 @@ app = FastAPI(
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5178"],
+    allow_origins=["http://localhost:5178", "http://127.0.0.1:5178"],
     allow_methods=["*"],
     allow_credentials=True,
 )
