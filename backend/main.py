@@ -3,6 +3,7 @@ LinkedIn Job Filter API - FastAPI 애플리케이션
 Phase 1: 프로젝트 세팅 + 구글 시트 연동 확인 ✅
 Phase 2: 파일 업로드 기능 ✅
 Phase 3: 필터링 로직 ✅
+Phase 4: 필터 + 시트 연결 ✅
 """
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -222,11 +223,13 @@ async def upload_json(file: UploadFile = File(...)):
 @app.post("/filter")
 async def filter_jobs():
     """
-    [Phase 3] 필터링 실행
+    [Phase 4] 필터링 + 시트 저장
     
     - 가장 최신 업로드 파일 (upload_YYYYMMDD_HHMMSS.json) 자동 검색
     - 필터링 적용 (6가지 조건)
-    - 통계 반환 (아직 Google Sheets에는 저장하지 않음)
+    - 통과한 job을 Google Sheets에 append
+    - processed_ids.json 업데이트
+    - 통계 반환
     
     Request: body 없음 (가장 최근 파일 자동 처리)
     
@@ -236,8 +239,9 @@ async def filter_jobs():
             "total": 150,
             "duplicatesRemoved": 12,
             "passed": 23,
+            "savedToSheet": 23,
             "rejected": 115,
-            "breakdown": {
+            "rejected": {
                 "salary": 15,
                 "experience": 35,
                 "clearance": 8,
@@ -245,14 +249,14 @@ async def filter_jobs():
                 "level": 54
             },
             "sheetUrl": "https://docs.google.com/spreadsheets/d/SHEET_ID",
-            "message": "필터링 완료: 전체 150개 중 23개 통과"
+            "message": "✅ 필터링 완료: 전체 150개 중 23개 통과"
         }
     
     Response 400:
         {"error": "No uploaded file found"}
     
     Response 500:
-        {"error": "필터링 중 오류 발생"}
+        {"error": "필터링 중 오류 발생" | "Google Sheets API 실패"}
     """
     try:
         # 1. 가장 최신 업로드 파일 검색
@@ -315,7 +319,51 @@ async def filter_jobs():
         print(f"   - 교육 요구: {stats['breakdown']['education']}")
         print(f"   - 직급 제외: {stats['breakdown']['level']}")
         
-        # 5. 응답 구성
+        # 5. Phase 4: 통과한 job을 Google Sheets에 저장
+        print("\n💾 Google Sheets에 저장 중...")
+        
+        saved_to_sheet = 0
+        new_ids_to_save = []
+        
+        if len(passed_jobs) > 0:
+            try:
+                # 5-1. parser를 사용해서 passed_jobs를 rows로 변환
+                parser = JobParser(created_at=datetime.now())
+                rows = parser.parse_jobs_to_rows(passed_jobs)
+                
+                print(f"   📝 {len(rows)}개 행으로 변환 완료")
+                
+                # 5-2. Google Sheets에 append
+                sheets_client = get_sheets_client()
+                sheets_client.append_rows(rows)
+                
+                saved_to_sheet = len(rows)
+                print(f"   ✅ {saved_to_sheet}개 행을 Google Sheets에 저장 완료")
+                
+                # 5-3. 저장된 job의 ID 수집
+                new_ids_to_save = [job.get("id", "") for job in passed_jobs]
+                print(f"   📌 저장된 ID 수: {len(new_ids_to_save)}")
+                
+                # 5-4. processed_ids.json 업데이트
+                from config import add_processed_ids
+                if add_processed_ids(new_ids_to_save):
+                    print(f"   ✅ processed_ids.json 업데이트 완료")
+                else:
+                    print(f"   ⚠️ processed_ids.json 업데이트 실패 (계속 진행)")
+            
+            except Exception as e:
+                print(f"   ❌ Google Sheets 저장 실패: {str(e)}")
+                raise HTTPException(
+                    status_code=500,
+                    detail={
+                        "error": str(e),
+                        "message": "Google Sheets API 실패"
+                    }
+                )
+        else:
+            print("   ℹ️  통과한 job이 없어 저장하지 않음")
+        
+        # 6. 응답 구성
         breakdown = stats.pop("breakdown")
         
         response = {
@@ -324,6 +372,7 @@ async def filter_jobs():
             "duplicatesRemoved": stats["duplicatesRemoved"],
             "filtered": stats["rejected"],  # 필터된 (탈락한) job 개수
             "passed": stats["passed"],
+            "savedToSheet": saved_to_sheet,
             "rejected": {
                 "salary": breakdown["salary"],
                 "experience": breakdown["experience"],

@@ -200,11 +200,19 @@ class JobParser:
         if not posted_dt:
             return ""
         
-        # 현재 시각과의 차이 계산
-        now = datetime.now(posted_dt.tzinfo) if posted_dt.tzinfo else datetime.now()
-        diff = now - posted_dt.replace(tzinfo=None) if posted_dt.tzinfo else now - posted_dt
+        # 현재 시각과의 차이 계산 (timezone-naive로 통일)
+        if posted_dt.tzinfo:
+            # UTC로 변환 후 timezone 제거
+            posted_dt = posted_dt.replace(tzinfo=None)
+        
+        now = datetime.now()
+        diff = now - posted_dt
         
         seconds = int(diff.total_seconds())
+        
+        # 음수인 경우 처리 (미래의 date인 경우)
+        if seconds < 0:
+            return ""
         
         if seconds < 60:
             return "방금 전"
