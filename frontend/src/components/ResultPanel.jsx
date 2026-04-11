@@ -116,6 +116,13 @@ function ResultPanel({ result, error, isLoading }) {
               <span className="reason-count">{rejected.stack}건</span>
             </li>
           )}
+          {rejected.company_size > 0 && (
+            <li className="breakdown-item">
+              <span className="reason-icon">🏢</span>
+              <span className="reason-text">회사 규모 (직원 10명 미만)</span>
+              <span className="reason-count">{rejected.company_size}건</span>
+            </li>
+          )}
         </ul>
       </div>
 

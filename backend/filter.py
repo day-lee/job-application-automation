@@ -32,7 +32,8 @@ class JobFilter:
             "clearance": 0,
             "education": 0,
             "level": 0,
-            "stack": 0
+            "stack": 0,
+            "company_size": 0
         }
     
     def extract_salary_from_text(self, text: str) -> int:
@@ -309,7 +310,20 @@ class JobFilter:
         # Step 7: 기술 스택 필터 (제외할 기술 포함 시 제외)
         if self.check_stack_excluded(job.get("title", "")):
             self.reject_stats["stack"] += 1
-            return False, "stack"   
+            return False, "stack"
+        
+        # Step 8: 회사 규모 필터 (회사 직원 수 10명 미만 제외)
+        company_employees = job.get("companyEmployeesCount", 0)
+        if isinstance(company_employees, str):
+            try:
+                company_employees = int(company_employees)
+            except ValueError:
+                company_employees = 0
+        
+        if company_employees < 10:
+            self.reject_stats["company_size"] += 1
+            return False, "company_size"
+        
         # 모든 필터 통과
         return True, ""
     
@@ -348,7 +362,8 @@ class JobFilter:
                 "clearance": self.reject_stats["clearance"],
                 "education": self.reject_stats["education"],
                 "level": self.reject_stats["level"],
-                "stack": self.reject_stats["stack"]
+                "stack": self.reject_stats["stack"],
+                "company_size": self.reject_stats["company_size"]
             }
         }
         

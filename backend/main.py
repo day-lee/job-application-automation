@@ -321,6 +321,7 @@ async def filter_jobs():
         print(f"   - 교육 요구: {stats['breakdown']['education']}")
         print(f"   - 직급 제외: {stats['breakdown']['level']}")
         print(f"   - 기술 스택 불일치: {stats['breakdown']['stack']}")
+        print(f"   - 회사 규모: {stats['breakdown']['company_size']}")
         
         # 5. Phase 4: 통과한 job을 Google Sheets에 저장
         print("\n💾 Google Sheets에 저장 중...")
@@ -382,7 +383,8 @@ async def filter_jobs():
                 "clearance": breakdown["clearance"],
                 "education": breakdown["education"],
                 "level": breakdown["level"],
-                "stack": breakdown["stack"]
+                "stack": breakdown["stack"],
+                "company_size": breakdown["company_size"]
             },
             "sheetUrl": f"https://docs.google.com/spreadsheets/d/{GOOGLE_SHEET_ID}",
             "message": f"✅ 필터링 완료: 전체 {stats['total']}개 중 {stats['passed']}개 통과"
