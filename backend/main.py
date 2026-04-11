@@ -308,7 +308,7 @@ async def filter_jobs():
         print("🔬 필터링 실행 중...")
         
         filter_engine = JobFilter(processed_ids)
-        passed_jobs, stats = filter_engine.filter_jobs(jobs)
+        passed_jobs, stats, rejected_jobs_detail = filter_engine.filter_jobs(jobs)
         
         print(f"✅ 필터링 완료:")
         print(f"   총 job 수: {stats['total']}")
@@ -374,7 +374,7 @@ async def filter_jobs():
             "success": True,
             "total": stats["total"],
             "duplicatesRemoved": stats["duplicatesRemoved"],
-            "filtered": stats["rejected"],  # 필터된 (탈락한) job 개수
+            "filtered": stats["rejected"],
             "passed": stats["passed"],
             "savedToSheet": saved_to_sheet,
             "rejected": {
@@ -386,6 +386,7 @@ async def filter_jobs():
                 "stack": breakdown["stack"],
                 "company_size": breakdown["company_size"]
             },
+            "rejectedJobs": rejected_jobs_detail[:50],
             "sheetUrl": f"https://docs.google.com/spreadsheets/d/{GOOGLE_SHEET_ID}",
             "message": f"✅ 필터링 완료: 전체 {stats['total']}개 중 {stats['passed']}개 통과"
         }

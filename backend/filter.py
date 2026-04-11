@@ -258,6 +258,76 @@ class JobFilter:
         
         return False
     
+    def extract_matched_text(self, text: str, pattern: str) -> str:
+        """
+        패턴을 찾아 앞뒤 50자씩 포함한 텍스트 추출
+        """
+        if not text or not pattern:
+            return ""
+        
+        text_lower = text.lower()
+        pattern_lower = pattern.lower()
+        idx = text_lower.find(pattern_lower)
+        
+        if idx == -1:
+            return pattern
+        
+        start = max(0, idx - 50)
+        end = min(len(text), idx + len(pattern) + 50)
+        return text[start:end].strip()
+    
+    def get_rejection_details(self, job: Dict) -> Tuple[str, str, str]:
+        """
+        rejected job의 상세 정보 추출 (duplicate 제외)
+        """
+        job_id = str(job.get("id", ""))
+        description = job.get("descriptionText", "")
+        
+        if job_id in self.processed_ids:
+            return "", "", ""
+        
+        max_salary = self.extract_max_salary(job)
+        if max_salary >= MAX_SALARY_FILTER:
+            return "salary", f"£{max_salary:,}", f"Salary: £{max_salary:,}"
+        
+        min_experience = self.extract_min_experience(description)
+        if min_experience >= MIN_EXPERIENCE_FILTER:
+            pattern = f"{min_experience}+ years"
+            matched_text = self.extract_matched_text(description, pattern)
+            return "experience", pattern, matched_text
+        
+        for keyword in CLEARANCE_KEYWORDS:
+            if keyword.lower() in description.lower():
+                matched_text = self.extract_matched_text(description, keyword)
+                return "clearance", keyword, matched_text
+        
+        if re.search(r'2[:\.]1\s+or\s+above', description.lower()):
+            pattern = "2:1 or above"
+            matched_text = self.extract_matched_text(description, pattern)
+            return "education", pattern, matched_text
+        
+        level_check_text = f"{job.get('title', '')} {job.get('standardizedTitle', '')}"
+        for keyword in LEVEL_EXCLUDE_KEYWORDS:
+            if re.search(rf'\\b{keyword}\\b', level_check_text.lower()):
+                return "level", keyword, level_check_text[:100]
+        
+        title = job.get("title", "")
+        for keyword in TECH_STACK_KEYWORDS["Unwanted"]:
+            if re.search(rf'\\b{keyword}\\b', title.lower()):
+                return "stack", keyword, title
+        
+        company_employees = job.get("companyEmployeesCount", 0)
+        if isinstance(company_employees, str):
+            try:
+                company_employees = int(company_employees)
+            except ValueError:
+                company_employees = 0
+        
+        if company_employees < 10:
+            return "company_size", f"{company_employees} employees", f"Company size: {company_employees}"
+        
+        return "", "", ""
+    
     def filter_job(self, job: Dict) -> Tuple[bool, str]:
         """
         단일 job 필터링
@@ -327,7 +397,7 @@ class JobFilter:
         # 모든 필터 통과
         return True, ""
     
-    def filter_jobs(self, jobs: List[Dict]) -> Tuple[List[Dict], Dict]:
+    def filter_jobs(self, jobs: List[Dict]) -> Tuple[List[Dict], Dict, List[Dict]]:
         """
         여러 job들 필터링
         
@@ -335,16 +405,31 @@ class JobFilter:
             jobs (list): Job 객체 리스트
         
         Returns:
-            Tuple[List[Dict], Dict]:
+            Tuple[List[Dict], Dict, List[Dict]]:
                 - 통과한 job 리스트
                 - 통계 (total, passed, rejected 분류)
+                - 제외된 job 상세 정보 (duplicate 제외)
         """
         passed_jobs = []
+        rejected_jobs_detail = []
         
         for job in jobs:
             is_passed, reject_reason = self.filter_job(job)
             if is_passed:
                 passed_jobs.append(job)
+            else:
+                # duplicate이 아닌 경우만 상세 정보 수집
+                if reject_reason != "duplicates":
+                    rejected_by, matched_pattern, matched_text = self.get_rejection_details(job)
+                    if rejected_by:
+                        rejected_jobs_detail.append({
+                            "id": str(job.get("id", "")),
+                            "title": job.get("title", ""),
+                            "company": job.get("companyName", ""),
+                            "rejectedBy": rejected_by,
+                            "matchedPattern": matched_pattern,
+                            "matchedText": matched_text
+                        })
         
         # 통계 구성
         total = len(jobs)
@@ -367,4 +452,4 @@ class JobFilter:
             }
         }
         
-        return passed_jobs, stats
+        return passed_jobs, stats, rejected_jobs_detail
