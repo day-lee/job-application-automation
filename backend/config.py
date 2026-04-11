@@ -48,7 +48,9 @@ TECH_STACK_KEYWORDS = {
 }
 
 # 보안 인가 키워드
-CLEARANCE_KEYWORDS = ["sc clearance", "security clearance", "dv clearance", "open to uk nationals only", "bpss"]
+CLEARANCE_KEYWORDS = ["sc clearance", "security clearance", "dv clearance", "open to uk nationals only", "bpss", "security check"]
+
+LEVEL_EXCLUDE_KEYWORDS = ["staff", "lead", "principal", "senior"]
 
 print(f"✅ Config loaded from {ENV_PATH}")
 print(f"Google Sheet ID: {GOOGLE_SHEET_ID}")

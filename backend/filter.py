@@ -6,7 +6,8 @@ from typing import List, Dict, Tuple
 from config import (
     MAX_SALARY_FILTER,
     MIN_EXPERIENCE_FILTER,
-    CLEARANCE_KEYWORDS
+    CLEARANCE_KEYWORDS, 
+    LEVEL_EXCLUDE_KEYWORDS
 )
 
 
@@ -163,7 +164,7 @@ class JobFilter:
         보안 인가 요구 여부 확인
         
         키워드: SC Clearance, Security Clearance, DV Clearance,
-               Open to UK nationals only, BPSS
+               Open to UK nationals only, BPSS, security check
         
         Args:
             text (str): 검색할 텍스트
@@ -208,14 +209,14 @@ class JobFilter:
         
         return False
     
-    def check_level_excluded(self, text: str) -> bool:
+    def check_level_required(self, text: str) -> bool:
         """
         제외할 직급 확인
         
-        키워드: staff, lead, principal
+        키워드: "staff", "lead", "principal", "senior"
         
         Args:
-            text (str): 검색할 텍스트 (title + seniorityLevel + description)
+            text (str): 검색할 텍스트 (title + standardizedTitle)
         
         Returns:
             bool: 제외 대상이면 True
@@ -224,9 +225,7 @@ class JobFilter:
             return False
         
         text_lower = text.lower()
-        excluded_keywords = ["staff", "lead", "principal"]
-        
-        for keyword in excluded_keywords:
+        for keyword in LEVEL_EXCLUDE_KEYWORDS:
             # 정확한 단어 매치 (앞뒤로 공백 또는 문장부호)
             if re.search(rf'\b{keyword}\b', text_lower):
                 return True
@@ -276,9 +275,9 @@ class JobFilter:
             return False, "education"
         
         # Step 6: 레벨 필터 (staff, lead, principal 제외)
-        # title + seniorityLevel + description에서 검색
-        level_check_text = f"{job.get('title', '')} {job.get('seniorityLevel', '')} {description}"
-        if self.check_level_excluded(level_check_text):
+        # title + standardizedTitle에서 검색
+        level_check_text = f"{job.get('title', '')} {job.get('standardizedTitle', '')}"
+        if self.check_level_required(level_check_text):
             self.reject_stats["level"] += 1
             return False, "level"
         
