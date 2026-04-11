@@ -308,8 +308,8 @@ class JobFilter:
         
         # Step 7: 기술 스택 필터 (제외할 기술 포함 시 제외)
         if self.check_stack_excluded(job.get("title", "")):
-            self.reject_stats["level"] += 1
-            return False, "level"   
+            self.reject_stats["stack"] += 1
+            return False, "stack"   
         # 모든 필터 통과
         return True, ""
     
@@ -347,7 +347,8 @@ class JobFilter:
                 "experience": self.reject_stats["experience"],
                 "clearance": self.reject_stats["clearance"],
                 "education": self.reject_stats["education"],
-                "level": self.reject_stats["level"]
+                "level": self.reject_stats["level"],
+                "stack": self.reject_stats["stack"]
             }
         }
         

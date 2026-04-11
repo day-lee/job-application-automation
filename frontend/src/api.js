@@ -40,7 +40,7 @@ export const uploadFile = async (file) => {
  *   passed: number,
  *   filtered: number,
  *   savedToSheet: number,
- *   rejected: {salary:number, experience:number, clearance:number, education:number, level:number},
+ *   rejected: {salary:number, experience:number, clearance:number, education:number, level:number, stack:number},
  *   sheetUrl: string,
  *   message: string
  * }>}

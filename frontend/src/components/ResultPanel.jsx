@@ -91,7 +91,7 @@ function ResultPanel({ result, error, isLoading }) {
           {rejected.clearance > 0 && (
             <li className="breakdown-item">
               <span className="reason-icon">🔐</span>
-              <span className="reason-text">보안 인가 필수</span>
+              <span className="reason-text">보안 인가 필수(SC Clearance)</span>
               <span className="reason-count">{rejected.clearance}건</span>
             </li>
           )}
@@ -105,8 +105,15 @@ function ResultPanel({ result, error, isLoading }) {
           {rejected.level > 0 && (
             <li className="breakdown-item">
               <span className="reason-icon">👔</span>
-              <span className="reason-text">직급 수준 (Lead/Principal)</span>
+              <span className="reason-text">직급 수준 (Lead/Principal/Senior)</span>
               <span className="reason-count">{rejected.level}건</span>
+            </li>
+          )}
+          {rejected.stack > 0 && (
+            <li className="breakdown-item">
+              <span className="reason-icon">🛠️</span>
+              <span className="reason-text">기술 스택 (C++/Java 등)</span>
+              <span className="reason-count">{rejected.stack}건</span>
             </li>
           )}
         </ul>
