@@ -7,7 +7,8 @@ from config import (
     MAX_SALARY_FILTER,
     MIN_EXPERIENCE_FILTER,
     CLEARANCE_KEYWORDS, 
-    LEVEL_EXCLUDE_KEYWORDS
+    LEVEL_EXCLUDE_KEYWORDS,
+    TECH_STACK_KEYWORDS
 )
 
 
@@ -30,7 +31,8 @@ class JobFilter:
             "experience": 0,
             "clearance": 0,
             "education": 0,
-            "level": 0
+            "level": 0,
+            "stack": 0
         }
     
     def extract_salary_from_text(self, text: str) -> int:
@@ -231,6 +233,29 @@ class JobFilter:
                 return True
         
         return False
+
+    def check_stack_excluded(self, text: str) -> bool:
+        """
+        제외할 기술 확인
+        
+        키워드: "c++", "c#", "kafka", "salesforce", "wordpress", "php", "spring", "ruby", "laravel"
+        
+        Args:
+            text (str): 검색할 텍스트 (title)
+        
+        Returns:
+            bool: 제외 대상이면 True
+        """
+        if not text:
+            return False
+        
+        text_lower = text.lower()
+        for keyword in TECH_STACK_KEYWORDS["Unwanted"]:
+            # 정확한 단어 매치 (앞뒤로 공백 또는 문장부호)
+            if re.search(rf'\b{keyword}\b', text_lower):
+                return True
+        
+        return False
     
     def filter_job(self, job: Dict) -> Tuple[bool, str]:
         """
@@ -281,6 +306,10 @@ class JobFilter:
             self.reject_stats["level"] += 1
             return False, "level"
         
+        # Step 7: 기술 스택 필터 (제외할 기술 포함 시 제외)
+        if self.check_stack_excluded(job.get("title", "")):
+            self.reject_stats["level"] += 1
+            return False, "level"   
         # 모든 필터 통과
         return True, ""
     

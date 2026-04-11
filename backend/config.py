@@ -44,7 +44,7 @@ TECH_STACK_KEYWORDS = {
     "DB": ["sql", "mysql", "postgresql", "postgres", "mongodb", "nosql"],
     "React": ["react", "react.js", "reactjs", "next.js", "nextjs"],
     "Node": ["node.js", "nodejs", "express"],
-    "Unwanted": ["c++", "c#", "ruby"],
+    "Unwanted": ["c++", "c#", "kafka", "salesforce", "wordpress", "php", "java", "spring", "ruby", "laravel", 'LLM', "contract", "adobe", "flutter", "swift", "kotlin"],
 }
 
 # 보안 인가 키워드
