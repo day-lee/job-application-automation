@@ -34,7 +34,7 @@ API_PORT = 8888
 SHEET_NAME = "Jobs"
 
 # 필터링 규칙 상수
-MAX_SALARY_FILTER = 50000  # £50K 이상 제외
+MAX_SALARY_FILTER = 60000  # £60K 이상 제외
 MIN_EXPERIENCE_FILTER = 3  # 3년 이상 경력 요구 시 제외
 
 # 기술 스택 키워드
