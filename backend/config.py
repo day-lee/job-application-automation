@@ -44,13 +44,13 @@ TECH_STACK_KEYWORDS = {
     "DB": ["sql", "mysql", "postgresql", "postgres", "mongodb", "nosql"],
     "React": ["react", "react.js", "reactjs", "next.js", "nextjs"],
     "Node": ["node.js", "nodejs", "express"],
-    "Unwanted": ["c++", "c#", "kafka", "salesforce", "wordpress", "php", "java", "spring", "ruby", "laravel", 'LLM', "contract", "adobe", "flutter", "swift", "kotlin"],
+    "Unwanted": ["c++", "c#", "kafka", "salesforce", "wordpress", "php", "java", "spring", "ruby", "laravel", 'llm', "contract", "adobe", "flutter", "swift", "kotlin", "machine learning", "yaml", "qa", "quality assurance", "cloud"],
 }
 
 # 보안 인가 키워드
 CLEARANCE_KEYWORDS = ["sc clearance", "security clearance", "dv clearance", "open to uk nationals only", "bpss", "security check"]
 
-LEVEL_EXCLUDE_KEYWORDS = ["staff", "lead", "principal", "senior"]
+LEVEL_EXCLUDE_KEYWORDS = ["staff", "lead", "principal", "senior", "iii", "sr.", "manager", "director", "vp", "c-level", "chief"]
 
 print(f"✅ Config loaded from {ENV_PATH}")
 print(f"Google Sheet ID: {GOOGLE_SHEET_ID}")
