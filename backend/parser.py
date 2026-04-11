@@ -244,11 +244,10 @@ class JobParser:
         """
         apply_method = job.get("applyMethod", "")
         
-        if apply_method == "SimpleOnsiteApply":
+        if apply_method == "SimpleOnsiteApply" or apply_method == "ComplexOnsiteApply":
             return "easy"
         elif apply_method == "OffsiteApply":
             return "company"
-        
         return ""
     
     def parse_job_to_row(self, job: Dict) -> List[str]:
