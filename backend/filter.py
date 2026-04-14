@@ -145,6 +145,7 @@ class JobFilter:
         # 패턴 찾기 (우선순위 순)
         patterns = [
             r'(\d+)\+\s*years',                          # "3+ years"
+            r'(\d+)\s*years?\+',                         # 3 years+
             r'(\d+)\s*-\s*\d+\s*years',                 # "3-5 years" (첫 숫자)
             r'minimum\s+(\d+)\s*years',                 # "minimum 3 years"
             r'at\s+least\s+(\d+)\s*years',             # "at least 3 years"
