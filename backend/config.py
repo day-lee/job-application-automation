@@ -44,7 +44,10 @@ TECH_STACK_KEYWORDS = {
     "DB": ["sql", "mysql", "postgresql", "postgres", "mongodb", "nosql"],
     "React": ["react", "react.js", "reactjs", "next.js", "nextjs"],
     "Node": ["node.js", "nodejs", "express"],
-    "Unwanted": ["c++", "c#", "kafka", "salesforce", "wordpress", "php", "java", "spring", "ruby", "laravel", 'llm', "contract", "adobe", "flutter", "swift", "kotlin", "machine learning", "yaml", "qa", "quality assurance", "cloud"],
+    "Unwanted": ["c++", "c#", "kafka", "salesforce", "wordpress", "php", "java", "spring", "ruby",
+                 "laravel", 'llm', "contract", "adobe", "flutter", "swift", "kotlin", "machine learning",
+                  "yaml", "qa", "quality assurance", "cloud", "azure", "oracle", "perl", "rust", "ubuntu", "Quantitative",
+                  "android", "forward deployed", "golang"],
 }
 
 # 보안 인가 키워드
