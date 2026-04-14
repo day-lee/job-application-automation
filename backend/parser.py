@@ -311,27 +311,27 @@ class JobParser:
             "",  # 1. Applied at (MANUAL - 수동입력)
             "",  # 2. Interview date (MANUAL - 수동입력)
             "",  # 3. Memo (MANUAL - 수동입력)
-            job.get("title", ""),  # 4. Posting Title
-            job.get("standardizedTitle", ""),  # 5. standardizedTitle
-            job.get("companyName", ""),  # 6. CompanyName
-            job.get("seniorityLevel", ""),  # 7. seniorityLevel
-            salary_display,  # 8. salaryInfo
-            workplace_type,  # 9. workplaceTypes
-            job.get("employmentType", ""),  # 10. employmentType
-            tech_stack.get("JS", ""),  # 11. JS
-            tech_stack.get("Python", ""),  # 12. Python
-            tech_stack.get("DB", ""),  # 13. DB
-            tech_stack.get("React", ""),  # 14. React
-            tech_stack.get("Node", ""),  # 15. Node
-            tech_stack.get("Unwanted", ""),  # 16. unwanted stack
-            job.get("applicantsCount", ""),  # 17. applicantsCount
-            job.get("industries", ""),  # 18. industries
-            job.get("companyWebsite", ""),  # 19. companyWebsite
-            str(job.get("companyEmployeesCount", "")),  # 20. companyEmployeesCount
-            posted_at_display,  # 21. PostedAt
-            job.get("link", ""),  # 22. Link
-            job.get("applyUrl", ""),  # 23. applyUrl
-            apply_method,  # 24. applyMethod
+            job.get("link", ""),  # 4. Link
+            job.get("applyUrl", ""),  # 5. applyUrl
+            job.get("title", ""),  # 6. Posting Title
+            job.get("standardizedTitle", ""),  # 7. standardizedTitle
+            job.get("companyName", ""),  # 8. CompanyName
+            job.get("seniorityLevel", ""),  # 9. seniorityLevel
+            salary_display,  # 10. salaryInfo
+            workplace_type,  # 11. workplaceTypes
+            job.get("employmentType", ""),  # 12. employmentType
+            tech_stack.get("JS", ""),  # 13. JS
+            tech_stack.get("Python", ""),  # 14. Python
+            tech_stack.get("DB", ""),  # 15. DB
+            tech_stack.get("React", ""),  # 16. React
+            tech_stack.get("Node", ""),  # 17. Node
+            tech_stack.get("Unwanted", ""),  # 18. unwanted stack
+            job.get("applicantsCount", ""),  # 19. applicantsCount
+            job.get("industries", ""),  # 20. industries
+            apply_method,  # 21. applyMethod        
+            str(job.get("employeesCount", "")),  # 22. companyEmployeesCount
+            posted_at_display,  # 23. PostedAt
+            job.get("companyWebsite", ""),  # 24. companyWebsite
             created_at_str,  # 25. createdAt
             str(job.get("id", ""))  # 26. id
         ]
