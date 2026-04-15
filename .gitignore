@@ -141,3 +141,5 @@ dmypy.json
 # credentials
 .env
 credentials.json
+
+.github
