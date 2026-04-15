@@ -79,7 +79,7 @@ class GoogleSheetsClient:
             raise Exception(f"❌ 행 추가 실패: {e}")
     
     def append_rows(self, rows):
-        """여러 행을 추가
+        """여러 행을 추가하고 배경색 적용
         
         Args:
             rows (list[list]): 추가할 행들의 리스트
@@ -91,10 +91,33 @@ class GoogleSheetsClient:
             if not self.sheet:
                 self.get_worksheet()
             
+            # 추가 전 현재 마지막 행 번호 구하기
+            all_values = self.sheet.get_all_values()
+            print(f"현재 시트에 {len(all_values)}개 행이 존재")
+            start_row = len(all_values) + 1  # 새로 추가될 첫 번째 행
+            
+            # 행 추가
             response = self.sheet.append_rows(rows,
                                               value_input_option='USER_ENTERED',
                                               table_range='A1')
             print(f"✅ {len(rows)}개 행 추가 성공")
+            
+            # 새로 추가된 행 범위에 배경색 적용
+            end_row = start_row + len(rows) - 1
+            range_notation = f"A{start_row}:Z{end_row}"
+            
+            # 배경색 포맷 (연한 파란색: RGB 0.85, 0.92, 1.0)
+            format_dict = {
+                "backgroundColor": {
+                    "red": 0.85,
+                    "green": 0.92,
+                    "blue": 1.0
+                }
+            }
+            
+            self.sheet.format(range_notation, format_dict)
+            print(f"✅ {range_notation} 배경색 적용 성공")
+            
             return response
         except Exception as e:
             raise Exception(f"❌ 행 추가 실패: {e}")
