@@ -70,7 +70,9 @@ class GoogleSheetsClient:
             if not self.sheet:
                 self.get_worksheet()
             
-            response = self.sheet.append_row(values)
+            response = self.sheet.append_row(values,
+                                             value_input_option='USER_ENTERED',
+                                             table_range='A1')
             print(f"✅ 행 추가 성공: {len(values)}개 셀")
             return response
         except Exception as e:
@@ -89,7 +91,9 @@ class GoogleSheetsClient:
             if not self.sheet:
                 self.get_worksheet()
             
-            response = self.sheet.append_rows(rows)
+            response = self.sheet.append_rows(rows,
+                                              value_input_option='USER_ENTERED',
+                                              table_range='A1')
             print(f"✅ {len(rows)}개 행 추가 성공")
             return response
         except Exception as e:

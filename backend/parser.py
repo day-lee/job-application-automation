@@ -255,32 +255,6 @@ class JobParser:
         Job 객체를 Google Sheets 행으로 변환
         
         컬럼 순서:
-        1. Applied at
-        2. Interview date
-        3. Memo
-        4. Posting Title
-        5. standardizedTitle
-        6. CompanyName
-        7. seniorityLevel
-        8. salaryInfo
-        9. workplaceTypes
-        10. employmentType
-        11. JS
-        12. Python
-        13. DB
-        14. React
-        15. Node
-        16. unwanted stack
-        17. applicantsCount
-        18. industries
-        19. companyWebsite
-        20. companyEmployeesCount
-        21. PostedAt
-        22. Link
-        23. applyUrl
-        24. applyMethod
-        25. createdAt
-        26. id
         
         Args:
             job (dict): Job 객체
@@ -308,9 +282,9 @@ class JobParser:
         
         # 행 구성
         row = [
-            "",  # 1. Applied at (MANUAL - 수동입력)
-            "",  # 2. Interview date (MANUAL - 수동입력)
-            "",  # 3. Memo (MANUAL - 수동입력)
+            " ",  # 1. Applied at (MANUAL - 수동입력)
+            " ",  # 2. Interview date (MANUAL - 수동입력)
+            " ",  # 3. Memo (MANUAL - 수동입력)
             job.get("link", ""),  # 4. Link
             job.get("applyUrl", ""),  # 5. applyUrl
             job.get("title", ""),  # 6. Posting Title
@@ -329,7 +303,7 @@ class JobParser:
             job.get("applicantsCount", ""),  # 19. applicantsCount
             job.get("industries", ""),  # 20. industries
             apply_method,  # 21. applyMethod        
-            str(job.get("employeesCount", "")),  # 22. companyEmployeesCount
+            str(job.get("companyEmployeesCount", "")),  # 22. companyEmployeesCount
             posted_at_display,  # 23. PostedAt
             job.get("companyWebsite", ""),  # 24. companyWebsite
             created_at_str,  # 25. createdAt
