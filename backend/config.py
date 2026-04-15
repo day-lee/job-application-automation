@@ -47,7 +47,7 @@ TECH_STACK_KEYWORDS = {
     "Unwanted": ["c++", "c#", "kafka", "salesforce", "wordpress", "php", "java", "spring", "ruby",
                  "laravel", 'llm', "contract", "adobe", "flutter", "swift", "kotlin", "machine learning",
                   "yaml", "qa", "quality assurance", "cloud", "azure", "oracle", "perl", "rust", "ubuntu", "Quantitative",
-                  "android", "forward deployed", "golang"],
+                  "android", "forward deployed", "golang", "quant"],
 }
 
 # 보안 인가 키워드
