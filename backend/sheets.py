@@ -58,7 +58,7 @@ class GoogleSheetsClient:
             raise Exception(f"❌ 워크시트 접근 실패: {e}")
     
     def append_row(self, values):
-        """새롭게 행을 추가
+        """테스트용: 새롭게 한줄 행을 추가
         
         Args:
             values (list): 추가할 행의 값 목록
