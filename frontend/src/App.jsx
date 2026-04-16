@@ -83,12 +83,12 @@ function App() {
 
       {/* 푸터 */}
       <footer className="app-footer">
-        <p>Backend API: http://localhost:8888 | Frontend: http://localhost:5178</p>
-        <p> Junior Software Engineer Javascript/ filter: experience level, location </p>
+        <p>Apify Actor: https://console.apify.com/actors/hKByXkMQaC5Qt9UMN/input</p>
         <p>24 hours: https://www.linkedin.com/jobs/search?keywords=Junior%20Software%20Engineer%20Javascript&location=London%20Area%2C%20United%20Kingdom&geoId=90009496&f_E=1%2C2%2C3%2C4&f_PP=100495523%2C110652431&f_TPR=r86400&position=1&pageNum=0 </p>
         <p>7 days: https://www.linkedin.com/jobs/search?keywords=Junior%20Software%20Engineer%20Javascript&location=London%20Area%2C%20United%20Kingdom&geoId=90009496&f_E=1%2C2%2C3%2C4&f_TPR=r604800&f_PP=100495523%2C110652431&position=1&pageNum=0</p>
-
-
+        <p>--------------------------------------------------------------------------------------------------------------------------------------------------------------</p>       
+        <p>Backend API: http://localhost:8888 | Frontend: http://localhost:5178</p>
+        <p> Junior Software Engineer Javascript/ filter: experience level, location </p>
       </footer>
     </div>
   )
