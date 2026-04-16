@@ -41,19 +41,19 @@ MIN_EXPERIENCE_FILTER = 3  # 3년 이상 경력 요구 시 제외
 TECH_STACK_KEYWORDS = {
     "JS": ["javascript", "typescript", "js", "ts"],
     "Python": ["python", "django", "flask", "fastapi"],
-    "DB": ["sql", "mysql", "postgresql", "postgres", "mongodb", "nosql"],
+    "DB": ["sql", "mysql", "postgresql", "postgres", "mongodb", "nosql", "relational"],
     "React": ["react", "react.js", "reactjs", "next.js", "nextjs"],
     "Node": ["node.js", "nodejs", "express"],
     "Unwanted": ["c++", "c#", "kafka", "salesforce", "wordpress", "php", "java", "spring", "ruby",
                  "laravel", 'llm', "contract", "adobe", "flutter", "swift", "kotlin", "machine learning",
                   "yaml", "qa", "quality assurance", "cloud", "azure", "oracle", "perl", "rust", "ubuntu", "Quantitative",
-                  "android", "forward deployed", "golang", "quant"],
+                  "android", "forward deployed", "golang", "quant", "russell"],
 }
 
 # 보안 인가 키워드
 CLEARANCE_KEYWORDS = ["sc clearance", "security clearance", "dv clearance", "open to uk nationals only", "bpss", "security check"]
 
-LEVEL_EXCLUDE_KEYWORDS = ["staff", "lead", "principal", "senior", "iii", "sr.", "manager", "director", "vp", "c-level", "chief"]
+LEVEL_EXCLUDE_KEYWORDS = ["staff", "lead", "principal", "senior", "iii", "sr.", "manager", "director", "vp", "c-level", "chief", "Vice President"]
 
 print(f"✅ Config loaded from {ENV_PATH}")
 print(f"Google Sheet ID: {GOOGLE_SHEET_ID}")
