@@ -37,7 +37,7 @@ SHEET_NAME = "Jobs"
 MAX_SALARY_FILTER = 60000  # £60K 이상 제외
 MIN_EXPERIENCE_FILTER = 3  # 3년 이상 경력 요구 시 제외
 
-# 기술 스택 키워드
+# 기술 스택 키워드 - lowercase
 TECH_STACK_KEYWORDS = {
     "JS": ["javascript", "typescript", "js", "ts"],
     "Python": ["python", "django", "flask", "fastapi"],
@@ -46,8 +46,8 @@ TECH_STACK_KEYWORDS = {
     "Node": ["node.js", "nodejs", "express"],
     "Unwanted": ["c++", "c#", "kafka", "salesforce", "wordpress", "php", "java", "spring", "ruby",
                  "laravel", 'llm', "contract", "adobe", "flutter", "swift", "kotlin", "machine learning",
-                  "yaml", "qa", "quality assurance", "cloud", "azure", "oracle", "perl", "rust", "ubuntu", "Quantitative",
-                  "android", "forward deployed", "golang", "quant", "russell"],
+                  "yaml", "qa", "quality assurance", "cloud", "azure", "oracle", "perl", "rust", "ubuntu", "quantitative",
+                  "android", " deployed", "forward deployment", "deployed", "golang", "quant", "russell", "reliability", "founding"],
 }
 
 # 보안 인가 키워드
