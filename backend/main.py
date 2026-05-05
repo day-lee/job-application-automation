@@ -86,7 +86,7 @@ async def test_sheet():
             "IT Services",  # industries
             "https://example.com",  # companyWebsite
             "500",  # companyEmployeesCount
-            "1 hour ago",  # PostedAt
+            datetime.now().strftime("%Y-%m-%d %H:%M"),  # PostedAt
             "https://example.com/job",  # Link
             "https://example.com/apply",  # applyUrl
             "company",  # applyMethod

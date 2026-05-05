@@ -166,15 +166,13 @@ class JobParser:
     
     def format_posted_at(self, job: Dict) -> str:
         """
-        PostedAt 시간 포맷팅
-        
-        "X분 전", "X시간 전" 형식으로 변환
+        PostedAt 시간 포맷팅 (실제 포스팅 시간)
         
         Args:
             job (dict): Job 객체 (postedAtTimestamp 또는 postedAt 필드 필요)
         
         Returns:
-            str: "10분 전", "2시간 전" 등
+            str: "4/23/2026 12:02:00" 형식, 없으면 ""
         """
         # postedAtTimestamp (밀리초) 또는 postedAt (ISO 문자열) 사용
         posted_timestamp = job.get("postedAtTimestamp")
@@ -197,36 +195,10 @@ class JobParser:
             except (ValueError, AttributeError):
                 pass
         
-        if not posted_dt:
-            return ""
+        if posted_dt:
+            return posted_dt.strftime("%Y-%m-%d-%H:%M")
         
-        # 현재 시각과의 차이 계산 (timezone-naive로 통일)
-        if posted_dt.tzinfo:
-            # UTC로 변환 후 timezone 제거
-            posted_dt = posted_dt.replace(tzinfo=None)
-        
-        now = datetime.now()
-        diff = now - posted_dt
-        
-        seconds = int(diff.total_seconds())
-        
-        # 음수인 경우 처리 (미래의 date인 경우)
-        if seconds < 0:
-            return ""
-        
-        if seconds < 60:
-            return "방금 전"
-        elif seconds < 3600:
-            minutes = seconds // 60
-            return f"{minutes}분 전"
-        elif seconds < 86400:
-            hours = seconds // 3600
-            return f"{hours}시간 전"
-        elif seconds < 604800:
-            days = seconds // 86400
-            return f"{days}일 전"
-        else:
-            return ""
+        return ""
     
     def format_apply_method(self, job: Dict) -> str:
         """
