@@ -1,7 +1,10 @@
 
-# ✅LinkedIn Job Filter - Automation Tool
+# ✅ LinkedIn Job Filter - Automation Tool
 
 A web application that filters LinkedIn job postings and automatically records them in Google Sheets.
+
+<img width="367" height="524" alt="image" src="https://github.com/user-attachments/assets/81c09971-4ac2-4316-b2bc-7c7a09fa77d9" />
+
 
 ## 📋 Project Overview
 
